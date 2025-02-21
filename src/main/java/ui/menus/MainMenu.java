@@ -22,7 +22,7 @@ public class MainMenu extends BaseMenu {
 
             consumeMessages(menuStringBuilder);
 
-            addDisplayList(menuStringBuilder, BoardDao.getInstance().findAll());
+            addDisplayList(menuStringBuilder, BoardDao.findAll());
 
             menuStringBuilder.append("\n\t[0] Sair")
                     .append("\n\t[1] Selecionar Board")
@@ -50,7 +50,7 @@ public class MainMenu extends BaseMenu {
         Console.clear();
 
         Board board = promptChoiceFromList(
-                BoardDao.getInstance().findAll(),
+                BoardDao.findAll(),
                 "Selecionar Board",
                 "Não há Boards registrados.",
                 "Board não encontrado."
@@ -67,7 +67,7 @@ public class MainMenu extends BaseMenu {
         Console.clear();
         System.out.println("Criar Board");
         System.out.print("\n\tTítulo do Board: ");
-        var newBoard = BoardDao.getInstance().create(scan.nextLine());
+        var newBoard = BoardDao.create(scan.nextLine());
         messages.push(String.format("Board '%s' criado com sucesso.", newBoard.getTitle()));
     }
 
@@ -75,7 +75,7 @@ public class MainMenu extends BaseMenu {
         Console.clear();
 
         Board board = promptChoiceFromList(
-                BoardDao.getInstance().findAll(),
+                BoardDao.findAll(),
                 "Remover Board",
                 "Não há Boards Registrados.",
                 "Board não encontrado."
@@ -85,7 +85,7 @@ public class MainMenu extends BaseMenu {
             return;
         }
 
-        BoardDao.getInstance().delete(board);
+        BoardDao.delete(board);
 
         messages.push(String.format("Board '%s' removido com sucesso.", board.getTitle()));
     }

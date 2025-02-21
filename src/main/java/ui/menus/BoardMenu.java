@@ -24,7 +24,7 @@ public class BoardMenu extends BaseMenu {
         while (!menuClosed) {
             Console.clear();
 
-            this.board = BoardDao.getInstance().reload(board);
+            this.board = BoardDao.reload(board);
 
             var menuStringBuilder = new StringBuilder(String.format("Board: %s\n", board.getTitle()));
 
@@ -66,7 +66,7 @@ public class BoardMenu extends BaseMenu {
 
         board.setTitle(scan.nextLine());
 
-        BoardDao.getInstance().update(board);
+        BoardDao.update(board);
 
         messages.push("Board renomeado com sucesso.");
     }
@@ -97,10 +97,10 @@ public class BoardMenu extends BaseMenu {
         var columns = board.getColumns();
         for (Column column : columns.subList(columns.size() - 2, columns.size())) {
             column.setOrder((short) (column.getOrder() + 1));
-            ColumnDao.getInstance().update(column);
+            ColumnDao.update(column);
         }
 
-        var newColumn = ColumnDao.getInstance().create(
+        var newColumn = ColumnDao.create(
                 scan.nextLine(),
                 ColumnType.Pendente,
                 (short) (columns.size() - 2),
@@ -132,10 +132,10 @@ public class BoardMenu extends BaseMenu {
         var i = 0;
         for (Column column : columns) {
             column.setOrder((short) i++);
-            ColumnDao.getInstance().update(column);
+            ColumnDao.update(column);
         }
 
-        ColumnDao.getInstance().delete(removedColumn);
+        ColumnDao.delete(removedColumn);
 
         messages.push(String.format("Coluna '%s' removida com sucesso.", removedColumn.getTitle()));
     }
@@ -176,8 +176,8 @@ public class BoardMenu extends BaseMenu {
         colA.setOrder(colB.getOrder());
         colB.setOrder(colAOrder);
 
-        ColumnDao.getInstance().update(colA);
-        ColumnDao.getInstance().update(colB);
+        ColumnDao.update(colA);
+        ColumnDao.update(colB);
 
         messages.push("Colunas reordenadas com sucesso.");
     }

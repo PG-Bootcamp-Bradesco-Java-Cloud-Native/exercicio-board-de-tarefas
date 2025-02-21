@@ -11,21 +11,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BoardDao {
-    private static BoardDao _instance = new BoardDao();
-
     private BoardDao() {
     }
 
-    public static BoardDao getInstance() {
-        return _instance;
-    }
-
-    public Board reload(Board board) {
+    public static Board reload(Board board) {
         var newBoard = findById(board.getId());
         return newBoard;
     }
 
-    public Board create(String title) {
+    public static Board create(String title) {
         var newBoard = new Board(title);
 
         try {
@@ -43,9 +37,9 @@ public class BoardDao {
         }
 
         List<Column> defaultColumns = Arrays.asList(
-                ColumnDao.getInstance().create("TBD", ColumnType.Inicial, (short) 0, newBoard),
-                ColumnDao.getInstance().create("Done", ColumnType.Final, (short) 1, newBoard),
-                ColumnDao.getInstance().create("Cancelled", ColumnType.Cancelamento, (short) 2, newBoard)
+                ColumnDao.create("TBD", ColumnType.Inicial, (short) 0, newBoard),
+                ColumnDao.create("Done", ColumnType.Final, (short) 1, newBoard),
+                ColumnDao.create("Cancelled", ColumnType.Cancelamento, (short) 2, newBoard)
         );
 
         newBoard.setColumns(defaultColumns);
@@ -53,7 +47,7 @@ public class BoardDao {
         return newBoard;
     }
 
-    public Board findById(Integer id) {
+    public static Board findById(Integer id) {
         try {
             var queryString = String.format("SELECT * FROM boards WHERE id = %d", id);
             var query = DbContext.connection.prepareStatement(queryString);
@@ -65,7 +59,7 @@ public class BoardDao {
                     new SimpleDateFormat("yyyy-MM-dd HH:mm")
                             .parse(resultSet.getString("created_at"))
             );
-            newBoard.setColumns(ColumnDao.getInstance().findAllByBoard(newBoard));
+            newBoard.setColumns(ColumnDao.findAllByBoard(newBoard));
             return newBoard;
         } catch (Exception e) {
             System.err.println(e);
@@ -74,7 +68,7 @@ public class BoardDao {
         }
     }
 
-    public List<Board> findAll() {
+    public static List<Board> findAll() {
         try {
             var queryString = "SELECT * FROM boards";
             var query = DbContext.connection.prepareStatement(queryString);
@@ -88,7 +82,7 @@ public class BoardDao {
                         new SimpleDateFormat("yyyy-MM-dd HH:mm")
                                 .parse(resultSet.getString("created_at"))
                 );
-                newBoard.setColumns((ArrayList<Column>) ColumnDao.getInstance().findAllByBoard(newBoard));
+                newBoard.setColumns((ArrayList<Column>) ColumnDao.findAllByBoard(newBoard));
                 boards.add(newBoard);
             }
             return boards;
@@ -99,7 +93,7 @@ public class BoardDao {
         }
     }
 
-    public void update(Board board) {
+    public static void update(Board board) {
         try {
             var queryString = String.format("UPDATE boards SET " +
                             "title = \"%s\" " +
@@ -115,15 +109,15 @@ public class BoardDao {
         }
     }
 
-    public void delete(Board board) {
-        var columns = ColumnDao.getInstance().findAllByBoard(board);
+    public static void delete(Board board) {
+        var columns = ColumnDao.findAllByBoard(board);
         for (Column column : columns) {
-            ColumnDao.getInstance().delete(column);
+            ColumnDao.delete(column);
         }
         deleteById(board.getId());
     }
 
-    private void deleteById(Integer id) {
+    private static void deleteById(Integer id) {
         try {
             var queryString = String.format("DELETE FROM boards WHERE id = %d", id);
             var query = DbContext.connection.prepareStatement(queryString);

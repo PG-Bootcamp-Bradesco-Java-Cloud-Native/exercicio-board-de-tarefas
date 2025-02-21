@@ -11,23 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ColumnDao {
-    private static ColumnDao _instance = new ColumnDao();
-
     private ColumnDao() {
     }
 
-    public static ColumnDao getInstance() {
-        return _instance;
-    }
-
-    public Column reload(Column column) {
+    public static Column reload(Column column) {
         var board = column.getBoard();
         var newColumn = findById(column.getId());
         newColumn.setBoard(board);
         return newColumn;
     }
 
-    public Column create(String title, ColumnType type, Short order, Board board) {
+    public static Column create(String title, ColumnType type, Short order, Board board) {
         var newColumn = new Column(title, type, order, board);
 
         try {
@@ -51,7 +45,7 @@ public class ColumnDao {
         return newColumn;
     }
 
-    public Column findById(Integer id) {
+    public static Column findById(Integer id) {
         try {
             var queryString = String.format("SELECT * FROM columns WHERE id = %d", id);
             var query = DbContext.connection.prepareStatement(queryString);
@@ -66,7 +60,7 @@ public class ColumnDao {
                     (short) resultSet.getInt("order_in_board"),
                     null
             );
-            newColumn.setCards(CardDao.getInstance().findAllByColumn(newColumn));
+            newColumn.setCards(CardDao.findAllByColumn(newColumn));
             return newColumn;
         } catch (Exception e) {
             System.err.println(e);
@@ -75,7 +69,7 @@ public class ColumnDao {
         }
     }
 
-    public List<Column> findAllByBoard(Board board) {
+    public static List<Column> findAllByBoard(Board board) {
         try {
             var queryString = String.format("SELECT * FROM columns WHERE board_id = %d ORDER BY order_in_board ASC", board.getId());
             var query = DbContext.connection.prepareStatement(queryString);
@@ -102,7 +96,7 @@ public class ColumnDao {
         }
     }
 
-    public void update(Column column) {
+    public static void update(Column column) {
         try {
             var queryString = String.format("UPDATE columns SET " +
                             "title = \"%s\", " +
@@ -122,15 +116,15 @@ public class ColumnDao {
         }
     }
 
-    public void delete(Column column) {
-        var cards = CardDao.getInstance().findAllByColumn(column);
+    public static void delete(Column column) {
+        var cards = CardDao.findAllByColumn(column);
         for (Card card : cards) {
-            CardDao.getInstance().delete(card);
+            CardDao.delete(card);
         }
         deleteById(column.getId());
     }
 
-    private void deleteById(Integer id) {
+    private static void deleteById(Integer id) {
         try {
             var queryString = String.format("DELETE FROM columns WHERE id = %d", id);
             var query = DbContext.connection.prepareStatement(queryString);

@@ -23,7 +23,7 @@ public class ColumnMenu extends BaseMenu {
         while (!menuClosed) {
             Console.clear();
 
-            this.column = ColumnDao.getInstance().reload(column);
+            this.column = ColumnDao.reload(column);
 
             var menuStringBuilder = new StringBuilder(String.format("Coluna: %s\n", column.getTitle()));
 
@@ -66,7 +66,7 @@ public class ColumnMenu extends BaseMenu {
 
         column.setTitle(scan.nextLine());
 
-        ColumnDao.getInstance().update(column);
+        ColumnDao.update(column);
 
         messages.push("Coluna renomeada com sucesso.");
     }
@@ -98,7 +98,7 @@ public class ColumnMenu extends BaseMenu {
         System.out.print("\n\tDescrição do Card: ");
         var description = scan.nextLine();
 
-        var newCard = CardDao.getInstance().create(
+        var newCard = CardDao.create(
                 title,
                 description,
                 column
@@ -136,7 +136,7 @@ public class ColumnMenu extends BaseMenu {
 
         card.setColumn(col);
 
-        CardDao.getInstance().update(card);
+        CardDao.update(card);
 
         messages.push(String.format("Card '%s' movido com sucesso para a coluna '%s'.", card.getTitle(), col.getTitle()));
     }
@@ -155,7 +155,7 @@ public class ColumnMenu extends BaseMenu {
             return;
         }
 
-        CardDao.getInstance().delete(card);
+        CardDao.delete(card);
 
         messages.push(String.format("Card '%s' removido com sucesso.", card.getTitle()));
     }

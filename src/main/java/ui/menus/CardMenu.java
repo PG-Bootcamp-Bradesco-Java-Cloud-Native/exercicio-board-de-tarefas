@@ -21,7 +21,7 @@ public class CardMenu extends BaseMenu {
         while (!menuClosed) {
             Console.clear();
 
-            this.card = CardDao.getInstance().reload(card);
+            this.card = CardDao.reload(card);
 
             var menuStringBuilder = new StringBuilder("Card: ").append(card.getTitle())
                     .append("\nBloqueado: ").append(card.getIsBlocked())
@@ -63,7 +63,7 @@ public class CardMenu extends BaseMenu {
 
         card.setTitle(scan.nextLine());
 
-        CardDao.getInstance().update(card);
+        CardDao.update(card);
 
         messages.push("Card renomeado com sucesso.");
     }
@@ -77,7 +77,7 @@ public class CardMenu extends BaseMenu {
 
         card.setDescription(scan.nextLine());
 
-        CardDao.getInstance().update(card);
+        CardDao.update(card);
 
         messages.push("Descrição do card alterado com sucesso.");
     }
@@ -92,7 +92,7 @@ public class CardMenu extends BaseMenu {
         card.setIsBlocked(newState);
         card.addBlockChangeLog(scan.nextLine());
 
-        CardDao.getInstance().update(card);
+        CardDao.update(card);
     }
 
     private void showBlockChangeLog() {

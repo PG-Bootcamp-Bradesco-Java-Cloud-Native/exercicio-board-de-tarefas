@@ -24,8 +24,10 @@ public class Card extends BaseModel {
         return String.join("<endcl/>", blockChangeLog);
     }
 
-    private List<String> parseBlockChangeLogString(String s) {
-        return new ArrayList<String>(Arrays.asList(s.split("<endcl/>")));
+    private List<String> parseBlockChangeLogString(String blockChangeLogString) {
+        var logStrings = new ArrayList<>(Arrays.asList(blockChangeLogString.split("<endcl/>")));
+        logStrings.removeIf(s -> s.isBlank() || s.isEmpty());
+        return logStrings;
     }
 
     public Card(String title, String description, Column column) {

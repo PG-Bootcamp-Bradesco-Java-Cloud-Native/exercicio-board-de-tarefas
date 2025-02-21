@@ -9,23 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CardDao {
-    private static CardDao _instance = new CardDao();
-
     private CardDao() {
     }
 
-    public static CardDao getInstance() {
-        return _instance;
-    }
-
-    public Card reload(Card card) {
+    public static Card reload(Card card) {
         var column = card.getColumn();
         var newCard = findById(card.getId());
         newCard.setColumn(column);
         return newCard;
     }
 
-    public Card create(String title, String description, Column column) {
+    public static Card create(String title, String description, Column column) {
         var newCard = new Card(title, description, column);
 
         try {
@@ -51,7 +45,7 @@ public class CardDao {
         return newCard;
     }
 
-    public Card findById(Integer id) {
+    public static Card findById(Integer id) {
         try {
             var queryString = String.format("SELECT * FROM cards WHERE id = %d", id);
             var query = DbContext.connection.prepareStatement(queryString);
@@ -75,7 +69,7 @@ public class CardDao {
         }
     }
 
-    public List<Card> findAllByColumn(Column column) {
+    public static List<Card> findAllByColumn(Column column) {
         try {
             var queryString = String.format("SELECT * FROM cards WHERE column_id = %d", column.getId());
             var query = DbContext.connection.prepareStatement(queryString);
@@ -103,7 +97,7 @@ public class CardDao {
         }
     }
 
-    public void update(Card card) {
+    public static void update(Card card) {
         try {
             var queryString = String.format("UPDATE cards SET " +
                             "title = \"%s\", " +
@@ -127,11 +121,11 @@ public class CardDao {
         }
     }
 
-    public void delete(Card card) {
+    public static void delete(Card card) {
         deleteById(card.getId());
     }
 
-    private void deleteById(Integer id) {
+    private static void deleteById(Integer id) {
         try {
             var queryString = String.format("DELETE FROM cards WHERE id = %d", id);
             var query = DbContext.connection.prepareStatement(queryString);
