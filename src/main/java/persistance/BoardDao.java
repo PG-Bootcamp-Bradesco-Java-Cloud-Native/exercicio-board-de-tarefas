@@ -65,7 +65,7 @@ public class BoardDao {
                     new SimpleDateFormat("yyyy-MM-dd HH:mm")
                             .parse(resultSet.getString("created_at"))
             );
-            newBoard.setColumns((ArrayList<Column>) ColumnDao.getInstance().findAllByBoard(newBoard));
+            newBoard.setColumns(ColumnDao.getInstance().findAllByBoard(newBoard));
             return newBoard;
         } catch (Exception e) {
             System.err.println(e);

@@ -94,10 +94,16 @@ public class BoardMenu extends BaseMenu {
         System.out.println("Adicionar Coluna");
         System.out.print("\n\tTítulo da Coluna: ");
 
+        var columns = board.getColumns();
+        for (Column column : columns.subList(columns.size() - 2, columns.size())) {
+            column.setOrder((short) (column.getOrder() + 1));
+            ColumnDao.getInstance().update(column);
+        }
+
         var newColumn = ColumnDao.getInstance().create(
                 scan.nextLine(),
                 ColumnType.Pendente,
-                (short) (board.getColumns().size() - 2),
+                (short) (columns.size() - 2),
                 board
         );
 
@@ -107,24 +113,73 @@ public class BoardMenu extends BaseMenu {
     private void removeColumn() {
         Console.clear();
 
-        Column column = promptChoiceFromList(
-                board.getColumns(),
+        var columns = board.getColumns();
+
+        Column removedColumn = promptChoiceFromList(
+                columns,
                 "Remover Coluna",
                 "Não há colunas registradas.",
                 "Coluna não encontrada."
         );
 
-        if (column == null) {
+        if (removedColumn == null) return;
+        if (removedColumn.getType() != ColumnType.Pendente) {
+            messages.add(String.format("A coluna '%s' não pode ser removida.", removedColumn.getTitle()));
             return;
         }
 
-        ColumnDao.getInstance().delete(column);
+        columns.remove(removedColumn);
+        var i = 0;
+        for (Column column : columns) {
+            column.setOrder((short) i++);
+            ColumnDao.getInstance().update(column);
+        }
 
-        messages.push(String.format("Coluna '%s' removido com sucesso.", column.getTitle()));
+        ColumnDao.getInstance().delete(removedColumn);
+
+        messages.push(String.format("Coluna '%s' removida com sucesso.", removedColumn.getTitle()));
     }
 
     private void reorderColumn() {
-        messages.push("Não implementado...");
+        Console.clear();
+
+        var columns = board.getColumns();
+        System.out.println("Reordenar colunas\n");
+
+        Column colA = promptChoiceFromList(
+                columns,
+                "\tColuna A",
+                "Não há colunas registradas.",
+                "Coluna não encontrada."
+        );
+
+        if (colA == null) return;
+        if (colA.getType() != ColumnType.Pendente) {
+            messages.add(String.format("A coluna '%s' não pode ser reordenada.", colA.getTitle()));
+            return;
+        }
+
+        Column colB = promptChoiceFromList(
+                columns,
+                "\tColuna B",
+                "Não há colunas registradas.",
+                "Coluna não encontrada."
+        );
+
+        if (colB == null) return;
+        if (colB.getType() != ColumnType.Pendente) {
+            messages.add(String.format("A coluna '%s' não pode ser reordenada.", colB.getTitle()));
+            return;
+        }
+
+        var colAOrder = colA.getOrder();
+        colA.setOrder(colB.getOrder());
+        colB.setOrder(colAOrder);
+
+        ColumnDao.getInstance().update(colA);
+        ColumnDao.getInstance().update(colB);
+
+        messages.push("Colunas reordenadas com sucesso.");
     }
 
 }

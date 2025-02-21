@@ -35,7 +35,8 @@ public class ColumnMenu extends BaseMenu {
                     .append("\n\t[1] Renomear")
                     .append("\n\t[2] Selecionar Card")
                     .append("\n\t[3] Adicionar Card")
-                    .append("\n\t[4] Remover Card")
+                    .append("\n\t[4] Mover Card")
+                    .append("\n\t[5] Remover Card")
                     .append("\n> ");
             System.out.print(menuStringBuilder.toString());
 
@@ -107,7 +108,37 @@ public class ColumnMenu extends BaseMenu {
     }
 
     private void repositionCard() {
-        messages.push("Não implementado...");
+        Console.clear();
+
+        System.out.println("Mover Card\n");
+
+        Card card = promptChoiceFromList(
+                column.getCards(),
+                "\tCard",
+                "Não há colunas registradas.",
+                "Coluna não encontrada."
+        );
+
+        if (card == null) return;
+        if (card.getIsBlocked()) {
+            messages.add(String.format("O card '%s' está bloqueado e não pode ser movido.", card.getTitle()));
+            return;
+        }
+
+        Column col = promptChoiceFromList(
+                column.getBoard().getColumns(),
+                "\tColuna",
+                "Não há colunas registradas.",
+                "Coluna não encontrada."
+        );
+
+        if (col == null) return;
+
+        card.setColumn(col);
+
+        CardDao.getInstance().update(card);
+
+        messages.push(String.format("Card '%s' movido com sucesso para a coluna '%s'.", card.getTitle(), col.getTitle()));
     }
 
     private void removeCard() {

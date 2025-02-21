@@ -23,9 +23,10 @@ public class CardMenu extends BaseMenu {
 
             this.card = CardDao.getInstance().reload(card);
 
-            var menuStringBuilder = new StringBuilder(String.format("Card: %s\n", card.getTitle()))
-                    .append("\nBloqueado:").append(card.getIsBlocked())
-                    .append("\nDescrição:").append("\n\t").append(card.getDescription());
+            var menuStringBuilder = new StringBuilder("Card: ").append(card.getTitle())
+                    .append("\nBloqueado: ").append(card.getIsBlocked())
+                    .append("\nDescrição: ").append(card.getDescription())
+                    .append("\n");
 
             consumeMessages(menuStringBuilder);
 
@@ -96,7 +97,7 @@ public class CardMenu extends BaseMenu {
 
     private void showBlockChangeLog() {
         for (String changeLog : card.getBlockChangeLog()) {
-            messages.add(changeLog);
+            messages.push(changeLog);
         }
     }
 }
